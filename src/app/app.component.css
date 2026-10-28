@@ -1,0 +1,28 @@
+/* This creates the Split Screen layout */
+.main-layout {
+  display: flex;
+  height: 100vh; /* Full screen height */
+  width: 100vw;
+  overflow: hidden;
+}
+
+.left-panel {
+  width: 40%; /* Assessment takes 40% width */
+  overflow-y: auto;
+}
+
+.right-panel {
+  width: 60%; /* Terminal takes 60% width */
+  background-color: #0d1117;
+}
+
+/* Mobile Responsiveness: Stack them on small screens */
+@media (max-width: 768px) {
+  .main-layout {
+    flex-direction: column;
+  }
+  .left-panel, .right-panel {
+    width: 100%;
+    height: 50%;
+  }
+}

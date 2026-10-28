@@ -1,0 +1,846 @@
+<div class="min-h-screen bg-[#0b0f19] text-slate-100 font-sans flex flex-col select-none overflow-x-hidden">
+  <!-- TOP HEADER BAR -->
+  <header
+    class="bg-[#111827] border-b border-slate-800/80 px-6 py-3.5 flex items-center justify-between gap-6 shadow-2xl z-20">
+    <!-- Title & Subtitle with Left Icon Aligned in Same Row -->
+
+      <div class="flex space-x-3.5 shrink-0 items-center">
+        <div class="w-10 h-10 rounded-xl bg-[#172031] border border-slate-700/60 flex justify-center shadow-inner shrink-0">
+          <span class="bg-gradient-to-tr from-purple-400 via-indigo-400 to-pink-400 bg-clip-text text-transparent text-3xl font-bold">✦</span>
+        </div>
+        <div class="title">
+          <h1 class="text-lg md:text-xl font-black tracking-wider text-white">
+            MULTIMODAL AI TECHNICAL INTERVIEWER
+          </h1>
+          <p class="text-xs text-slate-400 font-medium tracking-wide">Powered by Gemini Enterprise</p>
+        </div>
+      </div>
+
+    <!-- Metadata Badges on Right -->
+    <div class="flex items-center gap-3 text-xs overflow-x-auto py-1">
+      <!-- Role Badge -->
+      <!-- <div
+        class="bg-[#172031] border border-slate-700/60 px-3.5 py-2 rounded-xl flex items-center space-x-2.5 shadow-inner shrink-0">
+        <span class="text-slate-400 uppercase tracking-wider text-[10px] font-semibold">ROLE</span>
+        <span class="text-slate-200 font-medium">TSR</span>
+      </div> -->
+
+      <!-- Diagnostics Badge -->
+      <div
+        class="bg-[#172031] border border-slate-700/60 px-3.5 py-2 rounded-xl flex items-center space-x-2.5 shadow-inner shrink-0">
+        <span class="text-slate-400 uppercase tracking-wider text-[10px] font-semibold">DIAGNOSTICS</span>
+        <span class="text-emerald-400 font-semibold flex items-center space-x-1.5">
+          <span>ADK Butler Verified</span>
+          <span class="bg-emerald-500/20 px-1.5 py-0.5 rounded text-[11px] border border-emerald-500/30 font-bold">✓</span>
+        </span>
+      </div>
+
+      <!-- Security Badge -->
+      <div
+        class="bg-[#172031] border border-slate-700/60 px-3.5 py-2 rounded-xl flex items-center space-x-2.5 shadow-inner shrink-0">
+        <span class="text-slate-400 uppercase tracking-wider text-[10px] font-semibold">SECURITY</span>
+        <span class="text-slate-200 font-medium flex items-center space-x-1.5">
+          <span>localLockActive</span>
+          <span class="text-emerald-400 font-bold">[ON]</span>
+        </span>
+      </div>
+
+      <!-- Time Remaining Badge -->
+      <div
+        class="bg-[#172031] border border-purple-500/40 px-4 py-2 rounded-xl flex items-center space-x-2.5 shadow-lg shadow-purple-900/20 shrink-0">
+        <span class="text-slate-400 uppercase tracking-wider text-[10px] font-semibold">TIME</span>
+        <span class="text-white font-mono font-bold text-sm tracking-wider">{{ formattedTime() }}</span>
+      </div>
+
+      <!-- Telemetry Modal Trigger Button --> 
+        <button (click)="toggleTelemetryModal()" class="text-slate-400 hover:text-purple-400 transition ml-1 pl-2 border-l border-slate-700/60 focus:outline-none" title="FSM Telemetry Buffer"> 
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"> 
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+          </svg> 
+        </button>
+    </div>
+  </header>
+
+  <!-- MAIN LAYOUT CONTAINER -->
+  <div class="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-4 p-4 max-w-[1920px] mx-auto w-full">
+
+    <!-- LEFT PANEL (Diagnostic & Proctoring Status) -->
+    <div class="lg:col-span-3 flex flex-col gap-4">
+
+      <div class="flex gap-3">
+        <!-- Extreme Left Vertical Icon Bar -->
+        <div
+          class="w-12 bg-[#121824] border border-slate-800/80 rounded-2xl flex flex-col items-center py-4 space-y-4 shadow-md shrink-0">
+          <button
+            class="p-2.5 rounded-xl bg-purple-600/20 text-purple-400 border border-purple-500/30 transition hover:bg-purple-600/30">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+          </button>
+
+          <!-- Microphone Button with Mute Toggle -->
+          <button (click)="toggleMicModal()" class="p-2.5 rounded-xl transition relative"
+            [class.bg-rose-500_20]="isMicMuted()" [class.border]="isMicMuted()"
+            [class.border-rose-500_40]="isMicMuted()" [class.text-rose-400]="isMicMuted()"
+            [class.text-slate-400]="!isMicMuted()" [class.hover:bg-slate-800]="!isMicMuted()"
+            [class.hover:text-slate-200]="!isMicMuted()">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z" />
+            </svg>
+            @if (isMicMuted()) {
+            <span
+              class="absolute -top-1 -right-1 bg-rose-600 text-white text-[9px] font-bold px-1 rounded-full animate-pulse">MUTED</span>
+            }
+          </button>
+          <div class="flex-1"></div>
+          <!-- Diagnostic Butler Modal Trigger Button --> 
+          <button (click)="toggleDiagnosticModal()" class="p-2.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition" title="Pre-Assessment Diagnostic Butler"> 
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"> 
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /> 
+            </svg> 
+          </button>
+          <!-- Transcript & Notes Modal Trigger Button -->
+          <button (click)="toggleTranscriptModal()" class="p-2.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition" title="Transcript & Notes">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+            </svg>
+          </button>
+          <!-- Help & Documentation Modal Trigger Button -->
+          <button (click)="toggleHelpModal()" class="p-2.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition" title="Help & Documentation">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </button>
+          <button class="p-2.5 rounded-xl text-rose-400 hover:bg-rose-500/20 transition" title="Logout">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Left Panel Main Content -->
+        <div class="flex-1 flex flex-col gap-4">
+          <div class="text-[11px] font-medium text-slate-500 uppercase tracking-wider px-1">
+              Diagnostic & Proctoring Status
+          </div>
+
+          <!-- ADK Hybrid Proctoring (Live) -->
+          <div
+            class="bg-[#121824] border border-slate-800/80 rounded-2xl p-4 shadow-xl relative overflow-hidden flex flex-col">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-bold text-slate-200">ADK Hybrid Proctoring (Live)</span>
+              <span
+                class="flex items-center space-x-1.5 text-xs text-emerald-400 font-medium bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>Live</span>
+              </span>
+            </div>
+
+            <!-- Video Feed Placeholder with Face Bounding Box -->
+            <div
+              class="relative w-full h-44 rounded-xl bg-slate-900 border border-slate-800 overflow-hidden flex items-center justify-center shadow-inner">
+              <div
+                class="absolute inset-0 bg-gradient-to-b from-slate-800/40 to-slate-950/80 flex items-center justify-center">
+                <div
+                  class="w-28 h-28 rounded-full bg-slate-700/50 flex items-center justify-center overflow-hidden border border-slate-600/40">
+                  <svg class="w-24 h-24 text-slate-400 translate-y-2" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                      d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" />
+                  </svg>
+                </div>
+              </div>
+
+              <!-- Face Bounding Box -->
+              <div
+                class="absolute w-28 h-32 border-2 border-emerald-400 rounded-lg shadow-[0_0_15px_rgba(34,197,94,0.4)] flex flex-col justify-between p-1">
+                <div class="flex justify-between">
+                  <div class="w-3 h-3 border-t-2 border-l-2 border-emerald-300"></div>
+                  <div class="w-3 h-3 border-t-2 border-r-2 border-emerald-300"></div>
+                </div>
+                <div class="flex justify-between">
+                  <div class="w-3 h-3 border-b-2 border-l-2 border-emerald-300"></div>
+                  <div class="w-3 h-3 border-b-2 border-r-2 border-emerald-300"></div>
+                </div>
+              </div>
+
+              <!-- Status Overlay Banner inside video -->
+              <div
+                class="absolute bottom-2 left-2 right-2 bg-slate-950/85 backdrop-blur-md border border-emerald-500/30 rounded-xl px-3 py-2 text-[11px] flex flex-col gap-0.5">
+                <div class="text-emerald-400 font-bold tracking-wide">FACE DETECTED [99%]</div>
+                <div class="text-slate-300 font-mono">Gaze divert tracker: <span
+                    class="text-emerald-300 font-semibold">[NORMAL]</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Smart Acoustic Gating (Live) -->
+          <div class="bg-[#121824] border border-slate-800/80 rounded-2xl p-4 shadow-xl flex flex-col">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-xs font-bold text-slate-200">Smart Acoustic Gating</span>
+              <span class="text-xs text-slate-400 font-medium">Live</span>
+            </div>
+            <div class="text-[11px] text-slate-400 mb-3">Web Audio API RMS meter</div>
+
+            <!-- RMS Meter Waveform Bars -->
+            <div
+              class="bg-slate-950/80 border border-slate-800/80 rounded-xl p-3 h-20 flex flex-col justify-between relative overflow-hidden shadow-inner">
+              <div class="absolute inset-x-3 top-1/2 border-t border-dashed border-rose-500/70 z-10"></div>
+
+              <div class="flex items-end justify-between h-full gap-1 z-0 px-1">
+                @for (bar of rmsBars(); track $index) {
+                <div class="flex-1 rounded-full transition-all duration-300" [style.height.%]="bar"
+                  [class]="$index % 3 === 0 ? 'bg-purple-500' : ($index % 2 === 0 ? 'bg-indigo-400' : 'bg-blue-400')">
+                </div>
+                }
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between mt-3 text-[11px]">
+              <span class="text-slate-400">Local RMS Monitoring</span>
+              <span class="text-amber-400 font-bold tracking-wide">Spike Gate: Waiting</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Interactive progress state timeline -->
+      <div class="bg-[#121824] border border-slate-800/80 rounded-2xl p-4 shadow-xl flex flex-col">
+        <div class="text-xs font-bold text-slate-200 mb-3">Interactive progress state timeline</div>
+
+        <div class="flex flex-col space-y-3 pl-1">
+          <div class="flex items-center space-x-3 text-xs">
+            <div
+              class="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center font-bold text-[10px]">
+              ✓</div>
+            <span class="text-slate-300 font-medium">Hardware Check</span>
+          </div>
+
+          <div class="flex items-center space-x-3 text-xs">
+            <div
+              class="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center font-bold text-[10px]">
+              ✓</div>
+            <span class="text-slate-300 font-medium">Incident Intro</span>
+          </div>
+
+          <div
+            class="flex items-center space-x-3 text-xs bg-purple-600/15 border border-purple-500/40 p-2.5 rounded-xl shadow-md">
+            <div
+              class="w-5 h-5 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold text-[10px] shadow">
+              →</div>
+            <div class="flex-1 flex items-center justify-between">
+              <span class="text-purple-300 font-bold">Hypothesis Formulation</span>
+              <span class="text-[11px] font-mono text-purple-400 font-semibold">(08:45)</span>
+            </div>
+          </div>
+
+          <div class="flex items-center space-x-3 text-xs opacity-60">
+            <div
+              class="w-5 h-5 rounded-full bg-slate-800 text-slate-400 border border-slate-700 flex items-center justify-center font-bold text-[10px]">
+              ○</div>
+            <span class="text-slate-400">Telemetry Triage</span>
+          </div>
+
+          <div class="flex items-center space-x-3 text-xs opacity-60">
+            <div
+              class="w-5 h-5 rounded-full bg-slate-800 text-slate-400 border border-slate-700 flex items-center justify-center font-bold text-[10px]">
+              ○</div>
+            <span class="text-slate-400">RCA Declaration</span>
+          </div>
+
+          <div class="flex items-center space-x-3 text-xs opacity-60">
+            <div
+              class="w-5 h-5 rounded-full bg-slate-800 text-slate-400 border border-slate-700 flex items-center justify-center font-bold text-[10px]">
+              ○</div>
+            <span class="text-slate-400">Mitigation & Post-Mortem</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- CENTER PANEL (The Interview Arena) -->
+    <div class="lg:col-span-6 flex flex-col gap-4">
+
+      <div class="text-[11px] font-medium text-slate-500 uppercase tracking-wider flex items-center justify-between px-1">
+          The Interview Arena
+        <span class="flex items-center font-medium space-x-2 text-slate-100 text-[11px]">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+          <span>Latency: 240ms</span>
+        </span>
+      </div>
+
+      <!-- LIVE CHAT DIALOGUE (PRIMARY) / VOICE DIALOGUE (FALLBACK) -->
+      <div class="bg-[#121824] border border-slate-800/80 rounded-2xl p-5 shadow-xl flex flex-col gap-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-sm font-bold tracking-wide text-slate-200">
+              @if (!isVoiceMode()) { LIVE CHAT DIALOGUE } @else { LIVE VOICE DIALOGUE }
+            </h2>
+            <p class="text-xs text-slate-400 mt-0.5">
+              @if (!isVoiceMode()) { Secure real-time text-based support troubleshooting stream } @else { Gemini Multimodal Live API via WebRTC/AudioWorklet }
+            </p>
+          </div>
+          <div class="flex items-center gap-2">
+            <!-- Toggle Button for Voice Conversion -->
+            <button (click)="openVoiceSwitchModal()"
+              class="bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/30 text-xs font-semibold px-3 py-1.5 rounded-xl transition flex items-center space-x-1.5 shadow-sm">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                @if (!isVoiceMode()) {
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z" />
+                } @else {
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                }
+              </svg>
+              <span>Switch to {{ isVoiceMode() ? 'Chat' : 'Voice' }}</span>
+            </button>
+
+            <div class="flex items-center space-x-1.5 text-xs font-semibold px-3 py-1 rounded-full border shadow-inner"
+              [class.text-emerald-400]="!isVoiceMode()" [class.bg-emerald-500_10]="!isVoiceMode()" [class.border-emerald-500_20]="!isVoiceMode()"
+              [class.text-rose-400]="isVoiceMode()" [class.bg-rose-500_10]="isVoiceMode()" [class.border-rose-500_20]="isVoiceMode()">
+              <span class="w-2 h-2 rounded-full animate-pulse" [class.bg-emerald-400]="!isVoiceMode()" [class.bg-rose-500]="isVoiceMode()"></span>
+              <span>{{ isVoiceMode() ? 'Latency: 240ms' : 'Active Channel' }}</span>
+            </div>
+          </div>
+        </div>
+
+        @if (!isVoiceMode()) {
+          <!-- Chat Interface Feed & Input -->
+          <div class="bg-slate-950/65 border border-slate-800/80 rounded-xl p-4 flex flex-col gap-3 shadow-inner">
+            <div class="flex flex-col gap-3 max-h-60 overflow-y-auto pr-1">
+              @for (msg of chatMessages(); track $index) {
+                <div class="p-3 rounded-xl text-xs leading-relaxed border"
+                  [class.bg-slate-900_90]="msg.type === 'ai'" [class.border-slate-800]="msg.type === 'ai'"
+                  [class.bg-purple-950_20]="msg.type === 'candidate'" [class.border-purple-500_30]="msg.type === 'candidate'">
+                  <div class="flex items-center justify-between mb-1">
+                    <span class="font-bold uppercase tracking-wider" [class.text-purple-400]="msg.type === 'ai'" [class.text-emerald-400]="msg.type === 'candidate'">{{ msg.sender }}</span>
+                    <span class="text-[10px] text-slate-500">{{ msg.time }}</span>
+                  </div>
+                  <span class="text-slate-200 font-medium">“{{ msg.text }}”</span>
+                </div>
+              }
+            </div>
+
+            <!-- Chat Message Input Box -->
+            <div class="flex items-center gap-2 pt-2 border-t border-slate-800/80">
+              <input type="text" [value]="newMessage()" (input)="updateNewMessage($event)" (keyup.enter)="sendChatMessage()"
+                placeholder="Type your troubleshooting response..."
+                class="flex-1 bg-slate-900 border border-slate-700/80 rounded-xl px-4 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-purple-500 shadow-inner" />
+              <button (click)="sendChatMessage()"
+                class="bg-purple-600 hover:bg-purple-500 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition shadow-md shrink-0">
+                Send
+              </button>
+            </div>
+          </div>
+        } @else {
+          <!-- Audio Waveforms Container (Voice Fallback Mode) -->
+          <div class="bg-slate-950/80 border border-slate-800/80 rounded-xl p-4 flex flex-col gap-3 shadow-inner">
+            <div class="flex items-center justify-between h-12 gap-1 px-2">
+              @for (bar of aiWaveform(); track $index) {
+              <div class="flex-1 rounded-full transition-all duration-150" [style.height.%]="bar"
+                [class]="$index % 2 === 0 ? 'bg-purple-500' : 'bg-pink-400'"></div>
+              }
+            </div>
+
+            <div class="flex items-center justify-between h-10 gap-1 px-2">
+              @for (bar of candidateWaveform(); track $index) {
+              <div class="flex-1 rounded-full transition-all duration-150" [style.height.%]="bar"
+                [class]="$index % 2 === 0 ? 'bg-emerald-400' : 'bg-teal-500'"></div>
+              }
+            </div>
+          </div>
+
+          <!-- AI & Candidate Voice Dialogue Log -->
+          <div class="bg-slate-950/60 border border-slate-800/80 rounded-xl p-4 flex flex-col gap-3 shadow-inner">
+            <div class="text-xs leading-relaxed">
+              <span class="text-purple-400 font-bold uppercase tracking-wider block mb-1">GEMINI ENTERPRISE AI:</span>
+              <span class="text-slate-200 text-sm font-medium">“The symptoms show dead-end thread spikes in the router service. How would you start triage on thread pool exhaustion?”</span>
+            </div>
+
+            <div class="border-t border-slate-800/80 pt-3 text-xs leading-relaxed">
+              <span class="text-emerald-400 font-bold uppercase tracking-wider block mb-1">CANDIDATE:</span>
+              <span class="text-slate-300">“I’ll verify cgroups CPU limits first, check the disk pressure stats, and look at thread...” </span>
+              <span class="text-amber-400 font-semibold bg-amber-500/10 px-2 py-0.5 rounded-lg border border-amber-500/20 text-[11px] inline-block mt-1 shadow-sm">[Barge-In Allowed]</span>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Active Scenario Card -->
+      <div class="bg-[#121824] border border-slate-800/80 rounded-2xl p-5 shadow-xl flex flex-col gap-4 flex-1">
+        <div class="flex items-center justify-between">
+          <div>
+            <span class="text-xs font-bold text-slate-200">Active Scenario: Case Incident #4812</span>
+            <span class="text-xs text-slate-400 block sm:inline sm:ml-2">(Symptom: GE Mercuri RAG)</span>
+          </div>
+          <div class="flex items-center space-x-1.5 text-purple-400 font-bold text-xs tracking-wider">
+            <span>Gemini</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-4 flex-1">
+          <div
+            class="md:col-span-8 bg-slate-950/90 border border-slate-800/90 rounded-xl p-3.5 font-mono text-[11px] text-slate-300 overflow-x-auto shadow-inner">
+            <div class="text-rose-400 font-bold mb-1">Error snippets:</div>
+            <pre class="text-slate-400 leading-relaxed">triage_snippet: &#123;
+  candidate.FerrsSpedenelKccession(#4812: Sympptom: RAGKend
+  EnernicaladapOnConsoles.coastertTriage.fonthread_pool.CandScw
+  error_inipet:
+    sule: Escalated
+  CandidateCanddastors/a:caseIncident.#4812 (Symptom: GEM
+  Mercuri RAG) 
+&#125;</pre>
+          </div>
+
+          <div
+            class="md:col-span-4 flex flex-col justify-between bg-slate-950/50 border border-slate-800/80 rounded-xl p-3.5 gap-2 shadow-inner">
+            <div class="flex flex-col gap-1">
+              <span class="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Incident Status</span>
+              <span
+                class="text-emerald-400 font-bold text-xs bg-emerald-500/10 px-2.5 py-1.5 rounded-lg border border-emerald-500/20 text-center shadow-sm">P1
+                Incident Grounded</span>
+            </div>
+
+            <div class="flex flex-col gap-1">
+              <span class="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Privacy Policy</span>
+              <span
+                class="text-slate-200 font-semibold text-xs bg-slate-900 px-2.5 py-1.5 rounded-lg border border-slate-800 text-center shadow-sm">PII
+                Redacted</span>
+            </div>
+
+            <div class="flex flex-col gap-1">
+              <span class="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Escalation Scale</span>
+              <span
+                class="text-amber-400 font-bold text-xs bg-amber-500/10 px-2.5 py-1.5 rounded-lg border border-amber-500/20 text-center shadow-sm">Scale:
+                Escalated</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT PANEL (ADK Butler & Telemetry) -->
+    <div class="lg:col-span-3 flex flex-col gap-4">
+
+      <div class="text-[11px] font-medium text-slate-500 uppercase tracking-wider px-1">
+          ADK Butler & Telemetry
+      </div>
+
+      <!-- Pre-Assessment Diagnostic Butler (Verified) -->
+      <div class="bg-[#121824] border border-slate-800/80 rounded-2xl p-4 shadow-xl flex flex-col gap-3">
+       
+      </div>
+
+      <!-- FSM Telemetry Buffer (Live Log) -->
+      <div class="bg-[#121824] border border-slate-800/80 rounded-2xl p-4 shadow-xl flex flex-col gap-3 flex-1">
+
+        <!-- Action Buttons at Bottom -->
+        <div class="flex flex-col gap-3 mt-auto pt-3">
+          <button (click)="requestRephrase()"
+            class="w-full bg-[#1b2537] hover:bg-[#27354d] border border-slate-700/80 text-slate-200 font-medium py-3 px-4 rounded-xl text-xs shadow-lg transition active:scale-[0.98]">
+            Request Rephrase
+          </button>
+
+          <button (click)="finalizeRca()"
+            class="w-full relative group overflow-hidden bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold py-3.5 px-4 rounded-xl text-xs shadow-xl shadow-purple-900/40 transition active:scale-[0.98] flex items-center justify-center space-x-2 border border-purple-400/30">
+            <span>Declare RCA & Finalize</span>
+            <span class="text-yellow-300 animate-bounce text-sm">✦</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- MIC MUTED MODAL POPUP -->
+  @if (isMicModalOpen()) {
+  <div class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div
+      class="bg-[#121824] border border-rose-500/50 rounded-2xl max-w-lg w-full p-6 shadow-2xl shadow-rose-950/50 relative flex flex-col gap-5">
+
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+        <div class="flex items-center space-x-2 text-rose-500 font-black tracking-wider text-sm">
+          <svg class="w-5 h-5 animate-pulse" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z" />
+          </svg>
+          <span>MIC MUTED</span>
+        </div>
+        <button (click)="closeMicModal()" class="text-slate-400 hover:text-white transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Modal Body Description -->
+      <div class="text-center py-1 flex flex-col gap-2">
+        <p class="text-slate-200 text-sm font-medium">Microphone access revoked by user.</p>
+        <p class="text-slate-400 text-xs leading-relaxed">Real-time audio stream (Gemini Multimodal Live)
+          paused.<br>Proctoring requires active mic.<br>Please unmute to continue interview.</p>
+      </div>
+
+      <!-- Audio Waveform Preview -->
+      <div
+        class="bg-slate-950/80 border border-slate-800/80 rounded-xl p-3 flex items-center justify-center gap-1.5 h-12">
+        <div class="w-1.5 h-6 bg-rose-500/40 rounded-full animate-pulse"></div>
+        <div class="w-1.5 h-8 bg-rose-500/60 rounded-full animate-pulse"></div>
+        <div class="w-1.5 h-10 bg-rose-500 rounded-full animate-pulse"></div>
+        <div class="w-1.5 h-8 bg-rose-500/60 rounded-full animate-pulse"></div>
+        <div class="w-1.5 h-6 bg-rose-500/40 rounded-full animate-pulse"></div>
+      </div>
+
+      <!-- Unmute Button -->
+      <button (click)="unmuteMic()"
+        class="w-full relative group overflow-hidden bg-gradient-to-r from-rose-600 via-red-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white font-black py-3.5 px-4 rounded-xl text-xs shadow-xl shadow-rose-950/60 transition active:scale-[0.98] flex items-center justify-center space-x-2 border border-rose-400/40 tracking-wider uppercase">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z" />
+        </svg>
+        <span>UNMUTE NOW</span>
+      </button>
+    </div>
+  </div>
+  }
+
+  <!-- PRE-ASSESSMENT DIAGNOSTIC BUTLER MODAL POPUP -->
+  @if (isDiagnosticModalOpen()) {
+  <div class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div
+      class="bg-[#121824] border border-slate-700/80 rounded-2xl max-w-md w-full p-6 shadow-2xl relative flex flex-col gap-4">
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center space-x-2">
+          <h3 class="text-sm font-black tracking-wider text-slate-200 uppercase">Pre-Assessment Diagnostic Butler</h3>
+          <span class="text-emerald-400 font-semibold text-xs">(Verified)</span>
+        </div>
+        <button (click)="closeDiagnosticModal()" class="text-slate-400 hover:text-white transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <!-- Content Body -->
+      <div class="flex flex-col space-y-3 text-xs py-1">
+        <div class="flex items-center justify-between">
+          <span class="text-slate-300 flex items-center space-x-1.5">
+            <span class="text-emerald-400 font-bold">✓</span>
+            <span>Camera</span>
+          </span>
+          <span class="text-emerald-400 font-medium">(Verified)</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-slate-300 flex items-center space-x-1.5">
+            <span class="text-emerald-400 font-bold">✓</span>
+            <span>Mic</span>
+          </span>
+          <span class="text-emerald-400 font-medium">(Verified)</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-slate-300 flex items-center space-x-1.5">
+            <span class="text-emerald-400 font-bold">✓</span>
+            <span>CPU concurrency</span>
+          </span>
+          <span class="text-emerald-400 font-medium">(Verified)</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-slate-300 flex items-center space-x-1.5">
+            <span class="text-emerald-400 font-bold">✓</span>
+            <span>Memory (CPU left)</span>
+          </span>
+          <span class="text-emerald-400 font-medium">(Verified)</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-slate-300 flex items-center space-x-1.5">
+            <span class="text-emerald-400 font-bold">✓</span>
+            <span>Dual-oscillator speaker chime test</span>
+          </span>
+          <span class="text-emerald-400 font-medium">(Verified)</span>
+        </div>
+      </div>
+      <!-- Footer -->
+      <div class="flex items-center justify-end pt-3 border-t border-slate-800">
+        <button (click)="closeDiagnosticModal()"
+          class="bg-purple-600 hover:bg-purple-500 text-white font-bold px-4 py-2 rounded-xl text-xs transition shadow-lg">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- INTERVIEW TRANSCRIPT & NOTES MODAL POPUP -->
+  @if (isTranscriptModalOpen()) {
+  <div class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div
+      class="bg-[#121824] border border-slate-700/80 rounded-2xl max-w-2xl w-full p-6 shadow-2xl relative flex flex-col gap-4 max-h-[90vh] overflow-y-auto">
+
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-sm font-black tracking-wider text-slate-200 uppercase">INTERVIEW TRANSCRIPT & NOTES</h3>
+        <button (click)="closeTranscriptModal()" class="text-slate-400 hover:text-white transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Transcript Feed -->
+      <div class="flex flex-col gap-3 max-h-72 overflow-y-auto pr-1">
+        <div class="text-[10px] text-slate-500 text-right">Sun. 2011, 10:38 PM</div>
+        <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 shadow-inner">
+          <span class="text-purple-400 font-bold uppercase tracking-wider block mb-1">GEMINI AI:</span>
+          “Analyzing Case #4812 (GE Mercuri RAG service degradation). Let's review the thread dump and identify the root
+          cause of the deadlock in the router service.”
+        </div>
+
+        <div class="text-[10px] text-slate-500 text-right">Sun. 2017, 10:33 PM</div>
+        <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 shadow-inner">
+          <span class="text-rose-400 font-bold uppercase tracking-wider block mb-1">CANDIDATE:</span>
+          “I am reviewing the pod logs and cgroups CPU limits to see if resource throttling is causing the thread pool
+          saturation.”
+        </div>
+
+        <div class="text-[10px] text-slate-500 text-right">Sun. 2017, 12:45 AM</div>
+        <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 shadow-inner">
+          <span class="text-teal-400 font-bold uppercase tracking-wider block mb-1">CANDIDATE:</span>
+          “The active connections on the gateway show a spike in request latency. I will inspect the thread allocation
+          and trace the dead-end spikes.”
+        </div>
+        <div class="text-[10px] text-slate-500 text-right">10:55 PM</div>
+      </div>
+
+      <!-- Add Private Notes Section -->
+      <div class="border-t border-slate-800 pt-4 flex flex-col gap-3">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-slate-300">Add Private Notes to Case</span>
+          <button (click)="savePrivateNotes()"
+            class="bg-purple-600 hover:bg-purple-500 text-white font-bold px-4 py-1.5 rounded-lg text-xs transition shadow-md">
+            Save
+          </button>
+        </div>
+
+        <!-- Toolbar -->
+        <div
+          class="flex items-center space-x-2 bg-slate-900/80 border border-slate-800 px-3 py-2 rounded-lg text-slate-400 text-xs">
+          <button class="hover:text-white font-bold px-1.5 py-0.5 rounded hover:bg-slate-800">B</button>
+          <button class="hover:text-white italic px-1.5 py-0.5 rounded hover:bg-slate-800">I</button>
+          <button class="hover:text-white px-1.5 py-0.5 rounded hover:bg-slate-800">☰</button>
+        </div>
+
+        <!-- Textarea -->
+        <textarea placeholder="Add Private Notes to Case"
+          class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 focus:outline-none focus:border-purple-500/50 resize-none h-24 shadow-inner"></textarea>
+      </div>
+
+    </div>
+  </div>
+  }
+
+  <!-- INTERVIEW HELP & DOCUMENTATION MODAL POPUP -->
+  @if (isHelpModalOpen()) {
+  <div class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div
+      class="bg-[#121824] border border-slate-700/80 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative flex flex-col gap-4">
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-sm font-black tracking-wider text-slate-200 uppercase">INTERVIEW HELP & DOCUMENTATION</h3>
+        <button (click)="closeHelpModal()" class="text-slate-400 hover:text-white transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <!-- Tabs -->
+      <div class="flex items-center space-x-6 border-b border-slate-800 pb-2 text-xs font-semibold">
+        <button class="text-purple-400 border-b-2 border-purple-500 pb-1">Interview Guide</button>
+        <button class="text-slate-400 hover:text-slate-200 pb-1">FAQ</button>
+        <button class="text-slate-400 hover:text-slate-200 pb-1">RAG Insights</button>
+      </div>
+      <!-- Content Body -->
+      <div class="flex flex-col gap-3 text-xs text-slate-300 py-1">
+        <div class="font-bold text-slate-200">Current Scenario: Case #4812 (RAG Grounded)</div>
+        <ul class="list-disc list-inside text-slate-400 space-y-1 pl-1">
+          <li>Prompt hints: assessment considerations, CPU throttling, cgroups, task scheduling, thread pools, and
+            memory allocation limits.</li>
+        </ul>
+        <div class="font-bold text-slate-200 mt-2">Assessment Method: STAR Framework (Situation, Task, Action, Result)
+        </div>
+        <ul class="list-disc list-inside text-slate-400 space-y-1 pl-1">
+          <li>Prompt requirements: State component breakdown, telemetry inspection, log parsing, corrective action, and
+            validation.</li>
+        </ul>
+        <div class="font-bold text-slate-200 mt-2">Stuck? Feel free to ask for Rephrase
+          <span class="text-purple-400 italic">"I need a breadcrumb"</span>
+        </div>
+      </div>
+
+      <!-- Footer Buttons -->
+      <div class="flex items-center justify-end space-x-3 pt-3 border-t border-slate-800">
+        <button (click)="closeHelpModal()"
+          class="bg-rose-950/60 hover:bg-rose-900/60 text-rose-300 border border-rose-500/30 font-bold px-4 py-2 rounded-xl text-xs transition">
+          Close Guide
+        </button>
+        <button (click)="requestRephrase()"
+          class="bg-rose-600 hover:bg-rose-500 text-white font-bold px-4 py-2 rounded-xl text-xs shadow-lg transition">
+          Request Rephrase
+        </button>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- FSM TELEMETRY BUFFER MODAL POPUP -->
+  @if (isTelemetryModalOpen()) {
+  <div class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div
+      class="bg-[#121824] border border-slate-700/80 rounded-2xl max-w-md w-full p-6 shadow-2xl relative flex flex-col gap-4">
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-sm font-black tracking-wider text-slate-200 uppercase">FSM Telemetry Buffer (Live Log)</h3>
+        <button (click)="closeTelemetryModal()" class="text-slate-400 hover:text-white transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <!-- Content Body -->
+      <div
+        class="bg-slate-950/90 border border-slate-800 rounded-xl p-3.5 font-mono text-[11px] flex flex-col gap-2.5 shadow-inner">
+        <div class="text-emerald-400 flex items-center space-x-2">
+          <span class="font-bold">[Verified]</span>
+          <span class="text-slate-300">verified_cgroups_correctly</span>
+        </div>
+        <div class="text-amber-400 flex items-center space-x-2">
+          <span class="font-bold">[Triggered]</span>
+          <span class="text-slate-300">4s audio spike check <span class="text-emerald-400 font-bold">✓</span></span>
+        </div>
+        <div class="text-emerald-300 flex items-center space-x-2">
+          <span class="font-bold">[Ready]</span>
+          <span class="text-slate-300">reveal_escalation_hint(tier_1)</span>
+        </div>
+      </div>
+      <!-- Footer -->
+      <div class="flex items-center justify-end pt-3 border-t border-slate-800">
+        <button (click)="closeTelemetryModal()"
+          class="bg-purple-600 hover:bg-purple-500 text-white font-bold px-4 py-2 rounded-xl text-xs transition shadow-lg">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- SWITCH TO VOICE REASON MODAL POPUP -->
+  @if (isVoiceSwitchModalOpen()) {
+  <div class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div
+      class="bg-[#121824] border border-slate-700/80 rounded-2xl max-w-md w-full p-6 shadow-2xl relative flex flex-col gap-5">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-sm font-black tracking-wider text-slate-200 uppercase">Switch to Voice</h3>
+        <button (click)="closeVoiceSwitchModal()" class="text-slate-400 hover:text-white transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Question & Options Body -->
+      <div class="flex flex-col gap-3">
+        <p class="text-xs font-semibold text-slate-200">Why do you want to switch from Chat to Voice?</p>
+        
+        <div class="flex flex-col space-y-2 text-xs">
+          <!-- Option 1 -->
+          <label (click)="selectVoiceReason('Live troubleshooting')"
+            class="flex items-center space-x-3 p-3 rounded-xl border cursor-pointer transition"
+            [class.bg-purple-600_20]="selectedVoiceReason() === 'Live troubleshooting'"
+            [class.border-purple-500]="selectedVoiceReason() === 'Live troubleshooting'"
+            [class.bg-slate-900_80]="selectedVoiceReason() !== 'Live troubleshooting'"
+            [class.border-slate-800]="selectedVoiceReason() !== 'Live troubleshooting'">
+            <input type="radio" name="voiceReason" [checked]="selectedVoiceReason() === 'Live troubleshooting'" class="accent-purple-500" />
+            <span class="text-slate-200 font-medium">Live troubleshooting</span>
+          </label>
+
+          <!-- Option 2 -->
+          <label (click)="selectVoiceReason('To gather more information')"
+            class="flex items-center space-x-3 p-3 rounded-xl border cursor-pointer transition"
+            [class.bg-purple-600_20]="selectedVoiceReason() === 'To gather more information'"
+            [class.border-purple-500]="selectedVoiceReason() === 'To gather more information'"
+            [class.bg-slate-900_80]="selectedVoiceReason() !== 'To gather more information'"
+            [class.border-slate-800]="selectedVoiceReason() !== 'To gather more information'">
+            <input type="radio" name="voiceReason" [checked]="selectedVoiceReason() === 'To gather more information'" class="accent-purple-500" />
+            <span class="text-slate-200 font-medium">To gather more information</span>
+          </label>
+
+          <!-- Option 3 (Additional valid reason) -->
+          <label (click)="selectVoiceReason('Complex issue explanation')"
+            class="flex items-center space-x-3 p-3 rounded-xl border cursor-pointer transition"
+            [class.bg-purple-600_20]="selectedVoiceReason() === 'Complex issue explanation'"
+            [class.border-purple-500]="selectedVoiceReason() === 'Complex issue explanation'"
+            [class.bg-slate-900_80]="selectedVoiceReason() !== 'Complex issue explanation'"
+            [class.border-slate-800]="selectedVoiceReason() !== 'Complex issue explanation'">
+            <input type="radio" name="voiceReason" [checked]="selectedVoiceReason() === 'Complex issue explanation'" class="accent-purple-500" />
+            <span class="text-slate-200 font-medium">Complex issue explanation</span>
+          </label>
+
+          <!-- Option 4 (Additional valid reason) -->
+          <label (click)="selectVoiceReason('Faster communication')"
+            class="flex items-center space-x-3 p-3 rounded-xl border cursor-pointer transition"
+            [class.bg-purple-600_20]="selectedVoiceReason() === 'Faster communication'"
+            [class.border-purple-500]="selectedVoiceReason() === 'Faster communication'"
+            [class.bg-slate-900_80]="selectedVoiceReason() !== 'Faster communication'"
+            [class.border-slate-800]="selectedVoiceReason() !== 'Faster communication'">
+            <input type="radio" name="voiceReason" [checked]="selectedVoiceReason() === 'Faster communication'" class="accent-purple-500" />
+            <span class="text-slate-200 font-medium">Faster communication</span>
+          </label>
+
+          <!-- Option 5: Others -->
+          <label (click)="selectVoiceReason('Others')"
+            class="flex items-center space-x-3 p-3 rounded-xl border cursor-pointer transition"
+            [class.bg-purple-600_20]="selectedVoiceReason() === 'Others'"
+            [class.border-purple-500]="selectedVoiceReason() === 'Others'"
+            [class.bg-slate-900_80]="selectedVoiceReason() !== 'Others'"
+            [class.border-slate-800]="selectedVoiceReason() !== 'Others'">
+            <input type="radio" name="voiceReason" [checked]="selectedVoiceReason() === 'Others'" class="accent-purple-500" />
+            <span class="text-slate-200 font-medium">Others</span>
+          </label>
+        </div>
+
+        <!-- Conditional Text Box if 'Others' is selected -->
+        @if (selectedVoiceReason() === 'Others') {
+        <div class="mt-1">
+          <textarea [value]="otherReasonText()" (input)="updateOtherReason($event)"
+            placeholder="Please specify your reason..."
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 focus:outline-none focus:border-purple-500 resize-none h-20 shadow-inner"></textarea>
+        </div>
+        }
+      </div>
+
+      <!-- Footer Buttons -->
+      <div class="flex items-center justify-end space-x-3 pt-3 border-t border-slate-800">
+        <button (click)="closeVoiceSwitchModal()"
+          class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium px-4 py-2 rounded-xl text-xs transition">
+          Cancel
+        </button>
+        <button (click)="confirmSwitchToVoice()"
+          [disabled]="!selectedVoiceReason() || (selectedVoiceReason() === 'Others' && !otherReasonText().trim())"
+          class="bg-purple-600 hover:bg-purple-500 disabled:bg-purple-900/40 disabled:text-slate-500 disabled:cursor-not-allowed text-white font-bold px-4 py-2 rounded-xl text-xs transition shadow-lg">
+          Switch
+        </button>
+      </div>
+
+    </div>
+  </div>
+  }
+
+</div>
